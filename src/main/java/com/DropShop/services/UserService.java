@@ -14,11 +14,12 @@ import com.DropShop.Models.User;
 @Service
 public class UserService {
 
-	static List<User> usersList = new ArrayList<>();
+	private static List<User> usersList = new ArrayList<>();
 
 	static {
 		usersList.add(new User("Shubham", "Male", "shub@Gmail.com", "9458707862",
-				new ArrayList<Address>(Arrays.asList(new com.DropShop.Models.Address("UP", "Saharanpur", "247001"))),
+				new ArrayList<Address>(
+						Arrays.asList(new com.DropShop.Models.Address("UP", "Saharanpur", "247001", true))),
 				new ArrayList<Cart>(Arrays.asList(new Cart("CVID1257", "Macbook", "Apple", 1000, 1))),
 				new ArrayList<Orders>(
 						Arrays.asList(new Orders("VHJL2569", "KookaBoora Bat", 545.36, 4, "13-03-2021", "UPI")))));
@@ -26,7 +27,15 @@ public class UserService {
 	}
 
 	public List<User> getUsers() {
+		return getUsersList();
+	}
+
+	public static List<User> getUsersList() {
 		return usersList;
+	}
+
+	public static void setUsersList(List<User> usersList) {
+		UserService.usersList = usersList;
 	}
 
 }

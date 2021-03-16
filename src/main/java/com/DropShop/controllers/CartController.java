@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.DropShop.Models.Cart;
 import com.DropShop.services.CartService;
 
+import jdk.jfr.Description;
+
 @RestController
 public class CartController {
 
 	@Autowired
-	private CartService cartService;
+	private static CartService cartService;
 
 	@PostMapping("/user/{mobNo}")
 	public String addToCart(@RequestBody Cart cart, @PathVariable String mobNo) {
@@ -32,8 +34,14 @@ public class CartController {
 	}
 
 	@GetMapping("/user/{MobNo}/{op}/{productId}")
+	@Description("cart Operation such as delete, Increasing and decreasing Product Quantity")
 	public String performOnCart(@PathVariable String MobNo, @PathVariable String op, @PathVariable String productId) {
 		return cartService.performOnCart(MobNo, op, productId);
+	}
+
+	@GetMapping("/user/{MobNo}/getCartPrice")
+	public String getCartPrice(@PathVariable String MobNo) {
+		return cartService.getCartPrice(MobNo);
 	}
 
 }
