@@ -21,4 +21,16 @@ public class AddressService {
 		return addressList;
 	}
 
+	public static String deleteAddress(String mobNo, String pinCode) {
+		List<Address> addressList = shopDropUtility.getAddressList(mobNo);
+		for (int i = 0; i < addressList.size(); i++) {
+			Address address = addressList.get(i);
+			if (address.getPinCode().equals(pinCode)) {
+				addressList.remove(i);
+				return "Address Sucessfully Deleted";
+			}
+		}
+		return "No Address Found with given pinCode!";
+	}
+
 }

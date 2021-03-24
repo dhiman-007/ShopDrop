@@ -2,6 +2,7 @@ package com.DropShop.controllers;
 
 import java.util.List;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,13 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.DropShop.Models.Cart;
 import com.DropShop.services.CartService;
 
-import jdk.jfr.Description;
-
 @RestController
 public class CartController {
 
+	Logger log = org.slf4j.LoggerFactory.getLogger(HomeController.class);
+
 	@Autowired
-	private static CartService cartService;
+	private CartService cartService;
 
 	@PostMapping("/user/{mobNo}")
 	public String addToCart(@RequestBody Cart cart, @PathVariable String mobNo) {
@@ -34,14 +35,20 @@ public class CartController {
 	}
 
 	@GetMapping("/user/{MobNo}/{op}/{productId}")
-	@Description("cart Operation such as delete, Increasing and decreasing Product Quantity")
 	public String performOnCart(@PathVariable String MobNo, @PathVariable String op, @PathVariable String productId) {
 		return cartService.performOnCart(MobNo, op, productId);
 	}
 
 	@GetMapping("/user/{MobNo}/getCartPrice")
 	public String getCartPrice(@PathVariable String MobNo) {
+		log.info("Inside getCart Price Controller");
 		return cartService.getCartPrice(MobNo);
+	}
+
+	@GetMapping("/user/checkout/{mobNo}/{productId}")
+	public String checkout(@PathVariable String mobNo, @PathVariable String productId) {
+		return cartService.checkout(mobNo, productId);
+
 	}
 
 }

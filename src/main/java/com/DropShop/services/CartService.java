@@ -1,21 +1,23 @@
 package com.DropShop.services;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.DropShop.Models.Cart;
+import com.DropShop.Models.Orders;
 import com.DropShop.utility.ShopDropUtility;
 
 @Service
 public class CartService {
 
 	@Autowired
-	private static UserService userService;
+	private UserService userService;
 
 	@Autowired
-	private static ShopDropUtility shopDropUtility;
+	private ShopDropUtility shopDropUtility;
 
 	public String addToCart(Cart cart, String mobNo) {
 		List<Cart> cartToAdd = shopDropUtility.getCart(mobNo);
@@ -43,6 +45,25 @@ public class CartService {
 			totalCartPrice = cart.get(i).getProductPrice() * cart.get(i).getQuantity();
 		}
 		return "Your total cart price is Rs: " + totalCartPrice + "/-";
+	}
+
+	public String checkout(String mobNo, String productId) {
+		// TODO Auto-generated method stub
+		List<Cart> cart = shopDropUtility.getCart(mobNo);
+		for (Cart e : cart) {
+			if (e.getProductId().equals(productId)) {
+				try {
+					List<Orders> orders = shopDropUtility.getOrders(mobNo);
+					orders.add(new Orders(e.getProductId(), e.getProductName(), e.getProductPrice(), 0,
+							new Date().toString(), "PhonePay"));
+				} catch (Exception ex) {
+					System.out.println(ex.getMessage());
+				}
+				cart.remove(e);
+				return "Succesfully Placed Order";
+			}
+		}
+		return "Unable to Process Order at this time";
 	}
 
 }

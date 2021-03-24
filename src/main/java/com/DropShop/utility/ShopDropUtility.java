@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.DropShop.Models.Address;
 import com.DropShop.Models.Cart;
+import com.DropShop.Models.Orders;
 import com.DropShop.Models.User;
 import com.DropShop.services.UserService;
 
@@ -15,13 +16,20 @@ import com.DropShop.services.UserService;
 public class ShopDropUtility {
 
 	@Autowired
-	private static UserService userService;
+	private UserService userService;
 
 	public List<Cart> getCart(String mobNo) {
-		List<User> users = userService.getUsersList();
+		List<User> users = UserService.getUsersList();
 		List<User> user = users.stream().filter(p -> p.getMobileNumber().equals(mobNo)).collect(Collectors.toList());
 		List<Cart> cart = user.get(0).getCart();
 		return cart;
+	}
+
+	public List<Orders> getOrders(String mobNo) {
+		List<User> users = UserService.getUsersList();
+		List<User> user = users.stream().filter(p -> p.getMobileNumber().equals(mobNo)).collect(Collectors.toList());
+		List<Orders> orders = user.get(0).getOrders();
+		return orders;
 	}
 
 	public static String updateCart(List<Cart> cart, String op, String productId) {
@@ -49,7 +57,7 @@ public class ShopDropUtility {
 	}
 
 	public static List<Address> getAddressList(String mobNo) {
-		List<User> users = userService.getUsersList();
+		List<User> users = UserService.getUsersList();
 		List<User> user = users.stream().filter(p -> p.getMobileNumber().equals(mobNo)).collect(Collectors.toList());
 		List<Address> addressList = user.get(0).getAddress();
 		return addressList;
