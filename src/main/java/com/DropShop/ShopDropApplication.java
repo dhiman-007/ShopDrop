@@ -8,6 +8,7 @@ public class ShopDropApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ShopDropApplication.class, args);
+
 	}
 
 }

@@ -19,4 +19,20 @@ public class ProductsService {
 		return productsUtility.AllProducts;
 	}
 
+	public Product getSingleProductFromProductId(String Category, String productId) {
+
+		HashMap<String, List<Product>> AllProducts = productsUtility.AllProducts;
+		if (AllProducts.containsKey(Category)) {
+			List<Product> productsInVariety = AllProducts.get(Category);
+			for (Product product : productsInVariety) {
+				if (product.getPublicProductId().equals(productId)) {
+					return product;
+				}
+			}
+		} else {
+			throw new Error("No product Found");
+		}
+		return null;
+	}
+
 }
