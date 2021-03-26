@@ -16,7 +16,7 @@ import com.DropShop.services.CartService;
 @RestController
 public class CartController {
 
-	Logger log = org.slf4j.LoggerFactory.getLogger(HomeController.class);
+	Logger log = org.slf4j.LoggerFactory.getLogger(ProductController.class);
 
 	@Autowired
 	private CartService cartService;
@@ -47,7 +47,7 @@ public class CartController {
 
 	@GetMapping("/user/checkout/{mobNo}/{productId}")
 	public String checkout(@PathVariable String mobNo, @PathVariable String productId) {
-		return cartService.checkout(mobNo, productId);
+		return cartService.checkoutCart(mobNo, productId);
 
 	}
 

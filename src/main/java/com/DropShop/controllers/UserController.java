@@ -10,7 +10,7 @@ import com.DropShop.Models.User;
 import com.DropShop.services.UserService;
 
 @RestController
-public class HomeController {
+public class UserController {
 
 	@Autowired
 	private UserService userService;

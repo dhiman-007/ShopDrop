@@ -20,7 +20,7 @@ public class User {
 		this.name = name;
 		this.gender = gender;
 		this.email = email;
-		MobileNumber = mobileNumber;
+		this.MobileNumber = mobileNumber;
 		this.address = address;
 		this.cart = cart;
 		this.orders = orders;

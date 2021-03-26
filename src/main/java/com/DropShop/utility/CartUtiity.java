@@ -6,33 +6,26 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.DropShop.Models.Address;
 import com.DropShop.Models.Cart;
-import com.DropShop.Models.Orders;
 import com.DropShop.Models.User;
-import com.DropShop.services.UserService;
 
 @Service
-public class ShopDropUtility {
+public class CartUtiity {
 
 	@Autowired
-	private UserService userService;
+	private UserUtility userUtility;
 
 	public List<Cart> getCart(String mobNo) {
-		List<User> users = UserService.getUsersList();
+		List<User> users = userUtility.getUsersList();
 		List<User> user = users.stream().filter(p -> p.getMobileNumber().equals(mobNo)).collect(Collectors.toList());
 		List<Cart> cart = user.get(0).getCart();
 		return cart;
 	}
 
-	public List<Orders> getOrders(String mobNo) {
-		List<User> users = UserService.getUsersList();
-		List<User> user = users.stream().filter(p -> p.getMobileNumber().equals(mobNo)).collect(Collectors.toList());
-		List<Orders> orders = user.get(0).getOrders();
-		return orders;
-	}
-
 	public static String updateCart(List<Cart> cart, String op, String productId) {
+		if (cart.size() == 0) {
+			return "No, Item in the cart!";
+		}
 		for (int i = 0; i < cart.size(); i++) {
 			if (cart.get(i).getProductId().equals(productId)) {
 				if (op.equalsIgnoreCase("plus")) {
@@ -54,13 +47,6 @@ public class ShopDropUtility {
 			}
 		}
 		return "Operation Failed, Try Later";
-	}
-
-	public static List<Address> getAddressList(String mobNo) {
-		List<User> users = UserService.getUsersList();
-		List<User> user = users.stream().filter(p -> p.getMobileNumber().equals(mobNo)).collect(Collectors.toList());
-		List<Address> addressList = user.get(0).getAddress();
-		return addressList;
 	}
 
 }

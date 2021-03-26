@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.DropShop.Models.Address;
-import com.DropShop.utility.ShopDropUtility;
+import com.DropShop.utility.AddressUtility;
 
 public class AddressService {
 
@@ -13,16 +13,16 @@ public class AddressService {
 	private UserService userService;
 
 	@Autowired
-	private static ShopDropUtility shopDropUtility;
+	private static AddressUtility addressUtility;
 
 	public static List<Address> addYourAddress(Address address, String mobNo) {
-		List<Address> addressList = shopDropUtility.getAddressList(mobNo);
+		List<Address> addressList = addressUtility.getAddressList(mobNo);
 		addressList.add(address);
 		return addressList;
 	}
 
 	public static String deleteAddress(String mobNo, String pinCode) {
-		List<Address> addressList = shopDropUtility.getAddressList(mobNo);
+		List<Address> addressList = addressUtility.getAddressList(mobNo);
 		for (int i = 0; i < addressList.size(); i++) {
 			Address address = addressList.get(i);
 			if (address.getPinCode().equals(pinCode)) {
