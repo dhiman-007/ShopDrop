@@ -20,7 +20,7 @@ public class UserUtility {
 		usersList.add(new User("Shubham", "Male", "shub@Gmail.com", "9458707862",
 				new ArrayList<Address>(
 						Arrays.asList(new com.DropShop.Models.Address("UP", "Saharanpur", "247001", true))),
-				new ArrayList<Cart>(Arrays.asList(new Cart("CVD157", "Macbook", "Apple", 1000, 1))),
+				new ArrayList<Cart>(Arrays.asList(new Cart("CVD157", "Macbook Pro", "Apple", 200000, 1))),
 				new ArrayList<Orders>()));
 
 	}

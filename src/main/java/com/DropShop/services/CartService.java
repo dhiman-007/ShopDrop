@@ -4,11 +4,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.DropShop.Models.Cart;
 import com.DropShop.Models.Orders;
 import com.DropShop.utility.CartUtiity;
+import com.DropShop.utility.GeneralUtility;
 import com.DropShop.utility.OrderUtility;
 
 @Service
@@ -23,51 +26,79 @@ public class CartService {
 	@Autowired
 	private OrderUtility orderUtility;
 
-	public String addToCart(Cart cart, String mobNo) {
+	public ResponseEntity<String> addToCart(Cart cart, String mobNo) {
 		List<Cart> cartToAdd = cartUtiity.getCart(mobNo);
 		cartToAdd.add(cart);
-		return "Product is Successfully Added to your Cart";
+		return new ResponseEntity<String>("Product Added to cart!", HttpStatus.CREATED);
 
 	}
 
-	public List<Cart> getCart(String mobNo) {
+	public ResponseEntity<List<Cart>> getCart(String mobNo) {
+
 		List<Cart> cart = cartUtiity.getCart(mobNo);
-		return cart;
+		org.springframework.http.HttpHeaders responseHeader = new org.springframework.http.HttpHeaders();
+		responseHeader.set("content-type", "application/json");
+		return ResponseEntity.ok().headers(responseHeader).body(cart);
 
 	}
 
-	public String performOnCart(String mobNo, String op, String productId) {
+	public ResponseEntity<String> performOnCart(String mobNo, String op, String productId) {
 		List<Cart> cart = cartUtiity.getCart(mobNo);
 		String result = cartUtiity.updateCart(cart, op, productId);
-		return result;
+
+		if (result.equals("No, Item in the cart!")) {
+			return ResponseEntity.notFound().build();
+		}
+
+		else if (result.equals("Successful cart operation +") || result.equals("Successful cart operation -")
+				|| result.equals("Product removed from Your Cart!")) {
+			return ResponseEntity.ok().body(result);
+		}
+
+		return new ResponseEntity<String>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	public String getCartPrice(String mobNo) {
+	public ResponseEntity<String> getCartPrice(String mobNo) {
 		List<Cart> cart = cartUtiity.getCart(mobNo);
+
+		String responseBody;
+
+		if (cart == null) {
+			responseBody = "No cart Found with Given Credentials";
+			return new ResponseEntity<String>(responseBody, HttpStatus.NOT_FOUND);
+		}
+
 		double totalCartPrice = 0;
 		for (int i = 0; i < cart.size(); i++) {
 			totalCartPrice = cart.get(i).getProductPrice() * cart.get(i).getQuantity();
 		}
-		return "Your total cart price is Rs: " + totalCartPrice + "/-";
+
+		responseBody = "Your total cart price is Rs: " + totalCartPrice + "/-";
+		return new ResponseEntity<String>(responseBody, HttpStatus.OK);
 	}
 
-	public String checkoutCart(String mobNo, String productId) {
-		// TODO Auto-generated method stub
+	public ResponseEntity<List<Orders>> checkoutCart(String mobNo, String productId) {
+
 		List<Cart> cart = cartUtiity.getCart(mobNo);
+
+		System.out.println(cart);
+
 		for (Cart e : cart) {
 			if (e.getProductId().equals(productId)) {
-				try {
-					List<Orders> orders = orderUtility.getOrders(mobNo);
-					orders.add(new Orders(e.getProductId(), e.getProductName(), e.getProductPrice(), 0,
-							new Date().toString(), "PhonePay"));
-				} catch (Exception ex) {
-					System.out.println(ex.getMessage());
-				}
+
+				System.out.println(e.getProductId());
+
+				List<Orders> orders = orderUtility.getOrders(mobNo);
+
+				orders.add(new Orders(e.getProductId(), e.getProductName(), e.getProductPrice() * e.getQuantity(),
+						GeneralUtility.getProductRating(), new Date().toString(), GeneralUtility.Paidvia()));
+
 				cart.remove(e);
-				return "Succesfully Placed Order";
+
+				return new ResponseEntity<List<Orders>>(orders, HttpStatus.OK);
 			}
 		}
-		return "Unable to Process Order at this time";
+		return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }

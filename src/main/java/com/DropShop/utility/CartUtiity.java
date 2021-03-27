@@ -18,6 +18,13 @@ public class CartUtiity {
 	public List<Cart> getCart(String mobNo) {
 		List<User> users = userUtility.getUsersList();
 		List<User> user = users.stream().filter(p -> p.getMobileNumber().equals(mobNo)).collect(Collectors.toList());
+
+		System.out.println(user);
+
+		if (user.isEmpty()) {
+			return null;
+		}
+
 		List<Cart> cart = user.get(0).getCart();
 		return cart;
 	}
