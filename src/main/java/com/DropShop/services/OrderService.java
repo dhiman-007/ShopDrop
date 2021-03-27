@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.DropShop.Exceptions.NotFoundExcepton;
@@ -28,14 +30,14 @@ public class OrderService {
 	@Autowired
 	private GeneralUtility generalUtility;
 
-	public List<User> placingOrder(String mobNo, String Category, String productId) throws NotFoundExcepton {
+	public ResponseEntity<List<User>> placingOrder(String mobNo, String Category, String productId)
+			throws NotFoundExcepton {
 
 		HashMap<String, List<Product>> AllProducts = productsUtility.AllProducts;
 
 		try {
 
 			if (!AllProducts.containsKey(Category)) {
-
 				throw new NotFoundExcepton("No Category Of product is Found");
 			}
 
@@ -57,13 +59,13 @@ public class OrderService {
 					product.getPublicProductPrice(), GeneralUtility.getProductRating(), new Date().toString(),
 					GeneralUtility.Paidvia()));
 
-			return user;
+			return new ResponseEntity<List<User>>(user, HttpStatus.OK);
 
 		} catch (NotFoundExcepton e) {
 			System.out.println(e);
 		}
 
-		return null;
+		return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
 }

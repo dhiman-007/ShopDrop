@@ -2,6 +2,7 @@ package com.DropShop.controllers;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,12 +16,12 @@ import com.DropShop.services.AddressService;
 public class AddressController {
 
 	@PostMapping("/user/{mobNo}/addAddress")
-	public List<Address> addyourAddress(@RequestBody Address address, @PathVariable String mobNo) {
+	public ResponseEntity<List<Address>> addyourAddress(@RequestBody Address address, @PathVariable String mobNo) {
 		return AddressService.addYourAddress(address, mobNo);
 	}
 
 	@DeleteMapping("/user/{mobNo}/{pinCode}")
-	public String deleteAddress(@PathVariable String mobNo, @PathVariable String pinCode) {
+	public ResponseEntity<String> deleteAddress(@PathVariable String mobNo, @PathVariable String pinCode) {
 		return AddressService.deleteAddress(mobNo, pinCode);
 	}
 
