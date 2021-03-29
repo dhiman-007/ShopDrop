@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,19 +19,19 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-	@GetMapping("/users")
-	public ResponseEntity<List<User>> User() {
-		return userService.getUsers();
-	}
-
 	@PostMapping("/user/register")
 	public ResponseEntity<String> register(@RequestBody User user) {
 		return userService.register(user);
 	}
 
-//	@GetMapping("/user/{MobNo}/login")
-//	Public User login(@PathVariable String MobNo) {
-//		return userService.login(MobNo);
-//	}
+	@GetMapping("/users")
+	public ResponseEntity<List<User>> User() {
+		return userService.getUsers();
+	}
+
+	@GetMapping("/user/{email}")
+	public ResponseEntity<User> User(@PathVariable String email) {
+		return userService.getUser(email);
+	}
 
 }

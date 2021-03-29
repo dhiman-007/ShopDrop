@@ -1,24 +1,29 @@
 package com.DropShop.services;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.DropShop.Exceptions.NotFoundExcepton;
 import com.DropShop.Models.Cart;
 import com.DropShop.Models.Orders;
+import com.DropShop.Models.User;
 import com.DropShop.utility.CartUtiity;
 import com.DropShop.utility.GeneralUtility;
 import com.DropShop.utility.OrderUtility;
+import com.DropShop.utility.UserUtility;
 
 @Service
 public class CartService {
 
 	@Autowired
-	private UserService userService;
+	private UserUtility userUtility;
 
 	@Autowired
 	private CartUtiity cartUtiity;
@@ -81,24 +86,31 @@ public class CartService {
 
 		List<Cart> cart = cartUtiity.getCart(mobNo);
 
-		System.out.println(cart);
-
 		for (Cart e : cart) {
 			if (e.getProductId().equals(productId)) {
 
-				System.out.println(e.getProductId());
-
 				List<Orders> orders = orderUtility.getOrders(mobNo);
-
 				orders.add(new Orders(e.getProductId(), e.getProductName(), e.getProductPrice() * e.getQuantity(),
 						GeneralUtility.getProductRating(), new Date().toString(), GeneralUtility.Paidvia()));
-
 				cart.remove(e);
-
 				return new ResponseEntity<List<Orders>>(orders, HttpStatus.OK);
 			}
 		}
 		return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	public ResponseEntity<String> deleteCart(String mobNo) {
+
+		List<User> users = userUtility.getUsersList();
+		List<User> userIamLookingFor = users.stream().filter(p -> p.getMobileNumber().equalsIgnoreCase(mobNo))
+				.collect(Collectors.toList());
+		if (userIamLookingFor == null) {
+			throw new NotFoundExcepton("No user found with Given Credentials!");
+		}
+
+		User user = userIamLookingFor.get(0);
+		user.setCart(new ArrayList<Cart>());
+		return new ResponseEntity<String>("Successfully Deleted Cart", HttpStatus.OK);
 	}
 
 }

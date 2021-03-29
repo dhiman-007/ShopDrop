@@ -19,7 +19,7 @@ public class CartUtiity {
 		List<User> users = userUtility.getUsersList();
 		List<User> user = users.stream().filter(p -> p.getMobileNumber().equals(mobNo)).collect(Collectors.toList());
 
-		System.out.println(user);
+		// System.out.println(user);
 
 		if (user.isEmpty()) {
 			return null;

@@ -25,6 +25,10 @@ public class AddressService {
 
 	public static ResponseEntity<String> deleteAddress(String mobNo, String pinCode) {
 		List<Address> addressList = addressUtility.getAddressList(mobNo);
+
+		if (addressList == null)
+			return new ResponseEntity<>("Bad Request", HttpStatus.BAD_REQUEST);
+
 		String responseBody;
 		for (int i = 0; i < addressList.size(); i++) {
 			Address address = addressList.get(i);

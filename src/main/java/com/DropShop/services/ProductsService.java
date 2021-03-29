@@ -20,7 +20,6 @@ public class ProductsService {
 	public ResponseEntity<HashMap<String, List<Product>>> getAllProducts() {
 
 		HashMap<String, List<Product>> AllProducts = productsUtility.AllProducts;
-
 		return new ResponseEntity(AllProducts, HttpStatus.OK);
 
 	}
@@ -36,9 +35,27 @@ public class ProductsService {
 					return new ResponseEntity<Product>(product, HttpStatus.OK);
 				}
 			}
+		} else {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
 
-		return new ResponseEntity(HttpStatus.NOT_FOUND);
+		return new ResponseEntity("Server Error, Try Later!", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	public ResponseEntity<?> getProductsViaCategory(String productCategory) {
+		// TODO Auto-generated method stub
+		HashMap<String, List<Product>> AllProducts = productsUtility.AllProducts;
+
+		if (!AllProducts.containsKey(productCategory)) {
+
+			String ResponseBody = "No Prouct found with the Given Category!";
+			return new ResponseEntity<String>(ResponseBody, HttpStatus.NO_CONTENT);
+
+		}
+
+		List<Product> products = AllProducts.get(productCategory);
+
+		return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
 	}
 
 }
